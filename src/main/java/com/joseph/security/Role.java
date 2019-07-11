@@ -3,6 +3,7 @@ package com.joseph.security;
 import javax.persistence.*;
 import java.util.Collection;
 
+@Entity
 public class Role {
 
     @Id
