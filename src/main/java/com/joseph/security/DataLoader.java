@@ -2,10 +2,13 @@ package com.joseph.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+@Component
 public class DataLoader implements CommandLineRunner {
     @Autowired
     UserRepository userRepository;
@@ -14,7 +17,7 @@ public class DataLoader implements CommandLineRunner {
     RoleRepository roleRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... strings) throws Exception {
