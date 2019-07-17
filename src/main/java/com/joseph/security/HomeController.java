@@ -11,12 +11,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Arrays;
 
 @Controller
 public class HomeController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String showRegistrationPage(Model model) {
@@ -30,15 +34,32 @@ public class HomeController {
         if (result.hasErrors()){
             return "registration";
         } else {
+            user.setEnabled(true);
+            user.setRoles(Arrays.asList(roleRepository.findByRole("USER")));
             userRepository.save(user);
             model.addAttribute("created",  true);
         }
-        return "index";
+        return "home";
     }
 
     @RequestMapping("/")
-    public String index() {
-        return "index";
+    public String homePage(Principal principal, Model model) {
+        User user = ((CustomUserDetails)((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getUser();
+        model.addAttribute("user", user);
+        Role role1 = roleRepository.findByRole("ADMIN");
+        for (User check : role1.getUsers()) {
+            if (check.getId() == user.getId()) {
+                return "redirect:/admin";
+            }
+        }
+        return "home";
+    }
+
+    @RequestMapping("/admin")
+    public String adminPage(Principal principal, Model model) {
+        User user = ((CustomUserDetails)((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getUser();
+        model.addAttribute("user", user);
+        return "admin";
     }
 
     @RequestMapping("/login")
